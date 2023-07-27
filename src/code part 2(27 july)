@@ -1,0 +1,43 @@
+from pybricks.hubs import InventorHub
+from pybricks.pupdevices import Motor, ColorSensor, UltrasonicSensor
+from pybricks.parameters import Button, Color, Direction, Port, Side, Stop
+from pybricks.robotics import DriveBase
+from pybricks.tools import wait, StopWatch
+
+hub = InventorHub()
+steer_motor = Motor(Port.A)
+drive_motor = Motor(Port.B)
+
+hub.imu.reset_heading(0)
+drive_motor.reset_angle(0)
+a = 1
+
+for i in range(12):
+    drive_motor.reset_angle(0)
+    while drive_motor.angle()>-1500:
+        y = hub.imu.heading()*1.05
+        steer_motor.track_target(90*(a-1)-y/1.05)
+        drive_motor.run(-600)
+    steer_motor.run_angle(500,30)
+    while hub.imu.heading()<90:
+        steer_motor.track_target(30)
+        drive_motor.run(-400)
+    drive_motor.hold()
+
+    steer_motor.run_angle(500,-30)
+    while drive_motor.angle()>-2650:
+        x = hub.imu.heading()*1.05
+        steer_motor.track_target(90*a-x/1.05)
+        drive_motor.run(-600)
+    steer_motor.run_angle(500,30)
+    while hub.imu.heading()<90:
+        steer_motor.track_target(30)
+        drive_motor.run(-400)
+    drive_motor.hold()
+    
+    drive_motor.reset_angle(0)
+    while drive_motor.angle()>-900:
+        y = hub.imu.heading()*1.05
+        steer_motor.track_target(90*a-y/1.05)
+        drive_motor.run(-600)
+    a += 1
