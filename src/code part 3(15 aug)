@@ -1,0 +1,91 @@
+from pybricks.hubs import InventorHub
+from pybricks.pupdevices import Motor, ColorSensor, UltrasonicSensor
+from pybricks.parameters import Button, Color, Direction, Port, Side, Stop
+from pybricks.robotics import DriveBase
+from pybricks.tools import wait, StopWatch
+
+hub = InventorHub()
+steer_motor = Motor(Port.A)
+drive_motor = Motor(Port.B)
+rightcolour = ColorSensor(Port.C)
+leftcolour = ColorSensor(Port.F)
+us = UltrasonicSensor(Port.D)
+
+Color.RED = Color(h=349, s=97, v=13)
+Color.GREEN = Color(h=140, s=85, v=10)
+Color.NONE = Color(h=0, s=0, v=0)
+mycolors = (Color.GREEN, Color.RED, Color.NONE)
+rightcolour.detectable_colors(mycolors)
+
+hub.imu.reset_heading(0)
+x = hub.imu.heading()*1.1
+drive_motor.reset_angle(0)
+
+def green_left():
+    while drive_motor.angle()<180:
+        steer_motor.track_target(0-x)
+        drive_motor.run(400)
+    while hub.imu.heading()>-90:
+        steer_motor.track_target(-45)
+        drive_motor.run(-300)
+    while drive_motor.angle()>-180:
+        steer_motor.track_target(0-x)
+        drive_motor.run(-400)
+    while hub.imu.heading()<90:
+        steer_motor.track_target(45)
+        drive_motor.run(-300)
+    while hub.imu.heading()<90:
+        steer_motor.track_target(45)
+        drive_motor.run(-300)
+    while drive_motor.angle()>-200:
+        steer_motor.track_target(0-x)
+        drive_motor.run(-300)
+    while hub.imu.heading()>0:
+        steer_motor.track_target(-45)
+        drive_motor.run(-300)
+
+def red_right():
+    while drive_motor.angle()<180:
+        steer_motor.track_target(0-x)
+        drive_motor.run(400)
+    while hub.imu.heading()<90:
+        steer_motor.track_target(45)
+        drive_motor.run(-300)
+    while drive_motor.angle()>-90:
+        steer_motor.track_target(0-x)
+        drive_motor.run(-300)
+    while hub.imu.heading()>-90:
+        steer_motor.track_target(-45)
+        drive_motor.run(-300)
+    while drive_motor.angle()>-90:
+        steer_motor.track_target(0-x)
+        drive_motor.run(-300)
+    while hub.imu.heading()>-90:
+        steer_motor.track_target(-45)
+        drive_motor.run(-300)
+    while drive_motor.angle()>-200:
+        steer_motor.track_target(0-x)
+        drive_motor.run(-400)
+    while hub.imu.heading()<0:
+        steer_motor.track_target(45)
+        drive_motor.run(-300)
+
+while True:
+    color = rightcolour.color()
+    print(color)
+
+    if color == Color.NONE:
+        print("none")
+        x = hub.imu.heading()*1.1
+        steer_motor.track_target(0-x)
+        drive_motor.run(-200)
+
+
+    if color == Color.RED:
+        print("red")
+        red_right()
+
+    if color == Color.GREEN:
+        print("green")
+        green_left()
+        
